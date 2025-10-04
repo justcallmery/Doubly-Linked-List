@@ -1,0 +1,33 @@
+package myPackage;
+
+public class Main {
+
+    public static void main(String[] args) {
+        doublyLinkedList<Integer> list = new doublyLinkedList<>();
+
+        list.addFirst(10);
+        list.addFirst(20);
+        list.addLast(30);
+        list.addLast(40);
+        list.printForward();
+        list.printBackward();
+
+        list.insertAtIndex(2, 25);
+        list.printForward();
+
+        list.deleteAtIndex(1);
+        list.printForward();
+
+        System.out.println("Get index 2: " + list.get(2));
+        System.out.println("Contains 30? " + list.contains(30));
+        System.out.println("Contains 50? " + list.contains(50));
+
+        list.reverse();
+        list.printForward();
+
+        list.swapNodes(0, 2);
+        list.printForward();
+
+        System.out.println("Size: " + list.size());
+    }
+}
