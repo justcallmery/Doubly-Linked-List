@@ -1,0 +1,256 @@
+package myPackage;
+
+import java.util.NoSuchElementException;
+
+class doublyLinkedList<T> {
+
+    private class Node {
+
+        T data;
+        Node prev;
+        Node next;
+
+        Node(T data) {
+            this.data = data;
+            this.prev = null;
+            this.next = null;
+        }
+    }
+
+    private Node head;
+    private Node tail;
+    private int size;
+
+    public doublyLinkedList() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    public void addFirst(T data) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            newNode.next = head;
+            head.prev = newNode;
+            head = newNode;
+        }
+        size++;
+    }
+
+    public void addLast(T data) {
+        Node newNode = new Node(data);
+        if (tail == null) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+        }
+        size++;
+    }
+
+    public void removeFirst() {
+        if (head == null) {
+            return;
+        }
+        if (head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            head = head.next;
+            head.prev = null;
+        }
+        size--;
+    }
+
+    public void removeLast() {
+        if (tail == null) {
+            return;
+        }
+        if (head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            tail = tail.prev;
+            tail.next = null;
+        }
+        size--;
+    }
+
+    public void insertAtIndex(int index, T data) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (index == 0) {
+            addFirst(data);
+            return;
+        }
+        if (index == size) {
+            addLast(data);
+            return;
+        }
+        Node newNode = new Node(data);
+        Node current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        Node prevNode = current.prev;
+        prevNode.next = newNode;
+        newNode.prev = prevNode;
+        newNode.next = current;
+        current.prev = newNode;
+        size++;
+    }
+
+    public void deleteAtIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (index == 0) {
+            removeFirst();
+            return;
+        }
+        if (index == size - 1) {
+            removeLast();
+            return;
+        }
+        Node current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        current.prev.next = current.next;
+        current.next.prev = current.prev;
+        size--;
+    }
+
+    public T get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        return current.data;
+    }
+
+    public boolean contains(T data) {
+        Node current = head;
+        while (current != null) {
+            if (current.data.equals(data)) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public void reverse() {
+        Node current = head;
+        Node temp = null;
+        while (current != null) {
+            temp = current.prev;
+            current.prev = current.next;
+            current.next = temp;
+            current = current.prev;
+        }
+        if (temp != null) {
+            head = temp.prev;
+        }
+    }
+
+    public void swapNodes(int index1, int index2) {
+        if (index1 < 0 || index1 >= size || index2 < 0 || index2 >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (index1 == index2) {
+            return;
+        }
+        if (index1 > index2) {
+            int temp = index1;
+            index1 = index2;
+            index2 = temp;
+        }
+        Node node1 = head;
+        for (int i = 0; i < index1; i++) {
+            node1 = node1.next;
+        }
+        Node node2 = head;
+        for (int i = 0; i < index2; i++) {
+            node2 = node2.next;
+        }
+        if (node1.next == node2) {
+            Node prevNode = node1.prev;
+            Node nextNode = node2.next;
+            if (prevNode != null) {
+                prevNode.next = node2;
+            } else {
+                head = node2;
+            }
+            node2.prev = prevNode;
+            node2.next = node1;
+            node1.prev = node2;
+            node1.next = nextNode;
+            if (nextNode != null) {
+                nextNode.prev = node1;
+            } else {
+                tail = node1;
+            }
+        } else {
+            Node prev1 = node1.prev, next1 = node1.next;
+            Node prev2 = node2.prev, next2 = node2.next;
+            if (prev1 != null) {
+                prev1.next = node2;
+            } else {
+                head = node2;
+            }
+            node2.prev = prev1;
+            node2.next = next1;
+            if (next1 != null) {
+                next1.prev = node2;
+            } else {
+                tail = node2;
+            }
+            if (prev2 != null) {
+                prev2.next = node1;
+            } else {
+                head = node1;
+            }
+            node1.prev = prev2;
+            node1.next = next2;
+            if (next2 != null) {
+                next2.prev = node1;
+            } else {
+                tail = node1;
+            }
+        }
+    }
+
+    public void printForward() {
+        Node current = head;
+        System.out.print("Forward: ");
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+
+    public void printBackward() {
+        Node current = tail;
+        System.out.print("Backward: ");   
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.prev;
+        }
+        System.out.println();
+    }
+}
